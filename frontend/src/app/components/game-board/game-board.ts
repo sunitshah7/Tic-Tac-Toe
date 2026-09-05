@@ -30,11 +30,21 @@ import { PlayerMark } from '../../models/game.models';
     </div>
   `,
   styles: `
+    /* The host must carry the sizing. It is a flex item of the page shell, so a percentage
+       here resolves against the shell's definite width. Sizing the inner grid instead leaves
+       "100%" resolving against a shrink-to-fit host, which collapses the board to min-content
+       - nine tiny cells rather than a playable 3x3. */
+    :host {
+      display: block;
+      width: min(22rem, 100%);
+    }
+
     .board {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
       gap: 0.5rem;
-      width: min(22rem, 100%);
+      width: 100%;
       aspect-ratio: 1;
     }
 

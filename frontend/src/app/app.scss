@@ -124,8 +124,18 @@ h1 {
 .actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   gap: 0.75rem;
+}
+
+/* Separates the two game actions from Reset Scoreboard, which is the only one of the three
+   that outlives the current game. */
+.actions__divider {
+  width: 1px;
+  min-height: 1.5rem;
+  align-self: stretch;
+  background: var(--line);
 }
 
 .button {

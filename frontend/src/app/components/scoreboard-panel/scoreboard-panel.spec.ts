@@ -25,20 +25,18 @@ describe('ScoreboardPanelComponent', () => {
     expect(text('draws')).toBe('1');
   });
 
-  it('emits when reset is clicked', async () => {
-    let requested = 0;
-    fixture.componentInstance.resetRequested.subscribe(() => requested++);
+  it('updates when the backend reports new tallies', async () => {
     await fixture.whenStable();
 
-    fixture.nativeElement.querySelector('button.link').click();
+    fixture.componentRef.setInput('scoreboard', { xWins: 4, oWins: 2, draws: 1 });
+    await fixture.whenStable();
 
-    expect(requested).toBe(1);
+    expect(text('x-wins')).toBe('4');
   });
 
-  it('disables reset while a request is in flight', async () => {
-    fixture.componentRef.setInput('disabled', true);
+  it('is display only - Reset Scoreboard lives in the shell action row', async () => {
     await fixture.whenStable();
 
-    expect(fixture.nativeElement.querySelector('button.link').disabled).toBe(true);
+    expect(fixture.nativeElement.querySelectorAll('button').length).toBe(0);
   });
 });

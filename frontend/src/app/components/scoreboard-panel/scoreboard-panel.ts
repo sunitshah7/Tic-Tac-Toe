@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Scoreboard } from '../../models/game.models';
 
 /**
- * Session scoreboard. The numbers are served by the backend and survive Reset Game; only the
- * explicit Reset Scoreboard action clears them.
+ * Session scoreboard display. The numbers are served by the backend and survive Reset Game;
+ * only the explicit Reset Scoreboard action clears them, and that button lives in the shell's
+ * action row beside Reset Game and Undo Last Move so all three required controls sit together.
  */
 @Component({
   selector: 'app-scoreboard-panel',
@@ -26,10 +27,6 @@ import { Scoreboard } from '../../models/game.models';
           <dd data-testid="draws">{{ scoreboard().draws }}</dd>
         </div>
       </dl>
-
-      <button type="button" class="link" [disabled]="disabled()" (click)="resetRequested.emit()">
-        Reset Scoreboard
-      </button>
     </section>
   `,
   styles: `
@@ -53,7 +50,7 @@ import { Scoreboard } from '../../models/game.models';
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 0.5rem;
-      margin: 0 0 0.75rem;
+      margin: 0;
     }
 
     .tally {
@@ -83,31 +80,9 @@ import { Scoreboard } from '../../models/game.models';
     .mark--o {
       color: var(--mark-o);
     }
-
-    .link {
-      background: none;
-      border: none;
-      padding: 0;
-      font: inherit;
-      font-size: 0.85rem;
-      color: var(--accent);
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    .link:disabled {
-      color: var(--ink-muted);
-      cursor: default;
-    }
   `,
 })
 export class ScoreboardPanelComponent {
   /** Current tallies from the backend. */
   readonly scoreboard = input.required<Scoreboard>();
-
-  /** True while a request is in flight. */
-  readonly disabled = input(false);
-
-  /** Asks the shell to call the reset endpoint. */
-  readonly resetRequested = output<void>();
 }

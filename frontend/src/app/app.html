@@ -50,7 +50,13 @@
       />
 
       <div class="actions">
-        <button type="button" class="button" [disabled]="store.isBusy()" (click)="onResetGame()">
+        <button
+          type="button"
+          class="button"
+          data-testid="reset-game"
+          [disabled]="store.isBusy()"
+          (click)="onResetGame()"
+        >
           Reset Game
         </button>
         <button
@@ -65,15 +71,23 @@
             <span class="hint">(removes {{ store.state()?.undoDepth }})</span>
           }
         </button>
+
+        <span class="actions__divider" aria-hidden="true"></span>
+
+        <button
+          type="button"
+          class="button button--ghost"
+          data-testid="reset-scoreboard"
+          [disabled]="store.isBusy()"
+          (click)="onResetScoreboard()"
+        >
+          Reset Scoreboard
+        </button>
       </div>
     </section>
 
     <aside class="side">
-      <app-scoreboard-panel
-        [scoreboard]="store.scoreboard()"
-        [disabled]="store.isBusy()"
-        (resetRequested)="onResetScoreboard()"
-      />
+      <app-scoreboard-panel [scoreboard]="store.scoreboard()" />
       <app-move-history [moves]="store.moves()" />
     </aside>
   </main>

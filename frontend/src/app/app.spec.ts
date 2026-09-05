@@ -73,6 +73,55 @@ describe('App', () => {
     expect(query('[data-testid="status"]')?.textContent?.trim()).toBe('Player O to move');
   });
 
+  it('shows all three required action buttons', async () => {
+    await render();
+
+    expect(query('[data-testid="reset-game"]')?.textContent?.trim()).toBe('Reset Game');
+    expect(query('[data-testid="undo"]')?.textContent).toContain('Undo Last Move');
+    expect(query('[data-testid="reset-scoreboard"]')?.textContent?.trim()).toBe('Reset Scoreboard');
+  });
+
+  it('resets the scoreboard without disturbing the game in progress', async () => {
+    await render(
+      gameState({
+        board: boardWith({ 0: 'X' }),
+        currentPlayer: 'O',
+        canUndo: true,
+        undoDepth: 1,
+        scoreboard: { xWins: 3, oWins: 1, draws: 2 },
+      }),
+    );
+    expect(query('[data-testid="x-wins"]')?.textContent?.trim()).toBe('3');
+
+    (query('[data-testid="reset-scoreboard"]') as HTMLButtonElement).click();
+
+    const request = http.expectOne(`${BASE}/scoreboard/reset`);
+    expect(request.request.method).toBe('POST');
+    request.flush({ xWins: 0, oWins: 0, draws: 0 });
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(query('[data-testid="x-wins"]')?.textContent?.trim()).toBe('0');
+    expect(query('[data-testid="draws"]')?.textContent?.trim()).toBe('0');
+    // The board and the turn are untouched - only the tallies were cleared.
+    expect(query('[data-testid="status"]')?.textContent?.trim()).toBe('Player O to move');
+    expect(fixture.nativeElement.querySelectorAll('.cell--x').length).toBe(1);
+  });
+
+  it('resets the game while leaving the scoreboard alone', async () => {
+    await render(gameState({ scoreboard: { xWins: 2, oWins: 0, draws: 0 } }));
+
+    (query('[data-testid="reset-game"]') as HTMLButtonElement).click();
+
+    const request = http.expectOne(`${BASE}/games/${gameState().id}/reset`);
+    expect(request.request.method).toBe('POST');
+    request.flush(gameState({ scoreboard: { xWins: 2, oWins: 0, draws: 0 } }));
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(query('[data-testid="x-wins"]')?.textContent?.trim()).toBe('2');
+  });
+
   it('disables undo until there is something to undo', async () => {
     await render();
 
