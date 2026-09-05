@@ -1,0 +1,67 @@
+/* Global tokens and resets. Colours live here as custom properties so every component styles
+   itself from the same palette and a dark scheme is a single block. */
+
+:root {
+  color-scheme: light dark;
+
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-hover: #eef1f6;
+  --line: #d9dee7;
+  --ink: #16202e;
+  --ink-muted: #5c6b80;
+  --accent: #2563eb;
+  --on-accent: #ffffff;
+  --mark-x: #1d4ed8;
+  --mark-o: #c2410c;
+  --win-fill: #dcfce7;
+  --win-line: #15803d;
+  --danger-fill: #fef2f2;
+  --danger-line: #fecaca;
+  --danger-ink: #991b1b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f141b;
+    --surface: #171e28;
+    --surface-hover: #1f2836;
+    --line: #2b3646;
+    --ink: #e8edf4;
+    --ink-muted: #94a3b8;
+    --accent: #3b82f6;
+    --on-accent: #0b1220;
+    --mark-x: #60a5fa;
+    --mark-o: #fb923c;
+    --win-fill: #14532d;
+    --win-line: #4ade80;
+    --danger-fill: #3f1d1d;
+    --danger-line: #7f1d1d;
+    --danger-ink: #fecaca;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}

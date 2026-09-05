@@ -1,0 +1,25 @@
+# .NET
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+.vs/
+
+# Local SQLite database and its journals - created on first run, never committed
+*.db
+*.db-shm
+*.db-wal
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+
+# Editors and OS
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test and coverage output
+TestResults/
+coverage/

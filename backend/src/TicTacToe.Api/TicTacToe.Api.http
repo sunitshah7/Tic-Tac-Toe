@@ -1,0 +1,76 @@
+### Tic Tac Toe API — scratch requests
+### Run the API (dotnet run), then send these from VS Code / Visual Studio / Rider.
+### Full contract: ../../../docs/API.md
+
+@host = http://localhost:5090/api
+
+### Create a two-player game
+# @name createTwoPlayer
+POST {{host}}/games
+Content-Type: application/json
+
+{ "mode": "TwoPlayer" }
+
+### Create a game against the computer
+# @name createComputer
+POST {{host}}/games
+Content-Type: application/json
+
+{ "mode": "Computer" }
+
+### Capture the id from whichever game you created above
+@gameId = {{createTwoPlayer.response.body.id}}
+
+### Read the current state
+GET {{host}}/games/{{gameId}}
+
+### X plays the top-left corner (row/column form)
+POST {{host}}/games/{{gameId}}/moves
+Content-Type: application/json
+
+{ "player": "X", "row": 0, "column": 0 }
+
+### O plays the centre (cell-index form)
+POST {{host}}/games/{{gameId}}/moves
+Content-Type: application/json
+
+{ "player": "O", "cellIndex": 4 }
+
+### Rejected: cell already taken -> 409 CellOccupied
+POST {{host}}/games/{{gameId}}/moves
+Content-Type: application/json
+
+{ "player": "X", "cellIndex": 4 }
+
+### Rejected: off the board -> 400 OutOfBoard
+POST {{host}}/games/{{gameId}}/moves
+Content-Type: application/json
+
+{ "player": "X", "row": 0, "column": 3 }
+
+### Rejected: not that player's turn -> 409 WrongPlayer
+POST {{host}}/games/{{gameId}}/moves
+Content-Type: application/json
+
+{ "player": "O", "cellIndex": 8 }
+
+### Undo the last move (or move pair in computer mode)
+POST {{host}}/games/{{gameId}}/undo
+
+### Reset the game, keeping the scoreboard
+POST {{host}}/games/{{gameId}}/reset
+Content-Type: application/json
+
+{}
+
+### Reset the game and switch to computer mode
+POST {{host}}/games/{{gameId}}/reset
+Content-Type: application/json
+
+{ "mode": "Computer" }
+
+### Read the scoreboard
+GET {{host}}/scoreboard
+
+### Reset the scoreboard
+POST {{host}}/scoreboard/reset

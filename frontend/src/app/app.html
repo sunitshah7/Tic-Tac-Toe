@@ -1,0 +1,80 @@
+<div class="page">
+  <header class="header">
+    <div class="title">
+      <h1>Tic Tac Toe</h1>
+      <p class="subtitle">Angular front end &middot; .NET Web API &middot; the backend owns the rules</p>
+    </div>
+
+    <div class="modes" role="group" aria-label="Game mode">
+      @for (option of modes; track option.value) {
+        <button
+          type="button"
+          class="mode"
+          [class.mode--active]="store.mode() === option.value"
+          [attr.aria-pressed]="store.mode() === option.value"
+          [disabled]="store.isBusy()"
+          (click)="onModeChange(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+  </header>
+
+  @if (store.error(); as message) {
+    <div class="alert" role="alert">
+      <span>{{ message }}</span>
+      <button type="button" class="alert__dismiss" aria-label="Dismiss" (click)="store.clearError()">
+        &times;
+      </button>
+    </div>
+  }
+
+  <main class="layout">
+    <section class="play">
+      <p
+        class="status"
+        role="status"
+        [class.status--won]="store.state()?.status === 'Won'"
+        [class.status--draw]="store.state()?.status === 'Draw'"
+        data-testid="status"
+      >
+        {{ store.statusMessage() }}
+      </p>
+
+      <app-game-board
+        [board]="store.board()"
+        [winningCells]="store.winningCells()"
+        [active]="store.isBoardActive()"
+        (cellSelected)="onCellSelected($event)"
+      />
+
+      <div class="actions">
+        <button type="button" class="button" [disabled]="store.isBusy()" (click)="onResetGame()">
+          Reset Game
+        </button>
+        <button
+          type="button"
+          class="button button--ghost"
+          [disabled]="!store.canUndo()"
+          data-testid="undo"
+          (click)="onUndo()"
+        >
+          Undo Last Move
+          @if (store.mode() === 'Computer' && store.canUndo()) {
+            <span class="hint">(removes {{ store.state()?.undoDepth }})</span>
+          }
+        </button>
+      </div>
+    </section>
+
+    <aside class="side">
+      <app-scoreboard-panel
+        [scoreboard]="store.scoreboard()"
+        [disabled]="store.isBusy()"
+        (resetRequested)="onResetScoreboard()"
+      />
+      <app-move-history [moves]="store.moves()" />
+    </aside>
+  </main>
+</div>
